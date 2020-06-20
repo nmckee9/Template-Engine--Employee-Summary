@@ -14,6 +14,182 @@ const render = require("./lib/htmlRenderer");
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
 
+const employees = []
+const questions = [
+    {
+        message: "What Role Does the Employee Have on the Team?",
+        name: "role",
+        type: 'list',
+        choices: ["Engineer", "Intern", "Manager"]
+    },
+    {
+        message: "What is the Employee's Name?",
+        name: "name",
+        type: "input",
+    },
+    {
+        message: "What is the Employee's Email?",
+        name: "email",
+        type: "input",
+    },
+    {
+        message: "What is the Employee's ID Number?",
+        name: "id",
+        type: "input",
+    },
+
+
+];
+function promptUser() {
+    inquirer.prompt({
+        message: "What Role Does the Employee Have on the Team?",
+        name: "role",
+        type: 'list',
+        choices: ["Engineer", "Intern", "Manager"]
+    })
+        .then(answers => {
+            if (answers.role === "Intern") {
+                addIntern()
+            }
+            if (answers.role === "Engineer") {
+                addEngineer()
+            }
+            if (answers.role === "Manager") {
+                addManager()
+            }
+        })
+}
+function addIntern() {
+    inquirer.prompt([
+        {
+            message: "What is the Employee's Name?",
+            name: "name",
+            type: "input",
+        },
+        {
+            message: "What is the Employee's Email?",
+            name: "email",
+            type: "input",
+        },
+        {
+            message: "What is the Employee's ID Number?",
+            name: "id",
+            type: "input",
+        },
+        {
+            message: "What School did the Intern Attend?",
+            name: "school",
+            type: "input",
+        },
+        {
+            message: "Would You Like to Add Another Employee?",
+            name: "nextEmployee",
+            type: "confirm",
+        }
+    ])
+        .then(answers => {
+            let { name, id, email, school } = answers
+            let employee = new Intern(name, id, email, school)
+            employees.push(employee)
+            if (answers.nextEmployee) {
+                promptUser()
+            }
+            else {
+                writeToFile()
+            }
+        })
+}
+function addEngineer() {
+    inquirer.prompt([
+        {
+            message: "What is the Employee's Name?",
+            name: "name",
+            type: "input",
+        },
+        {
+            message: "What is the Employee's Email?",
+            name: "email",
+            type: "input",
+        },
+        {
+            message: "What is the Employee's ID Number?",
+            name: "id",
+            type: "input",
+        },
+        {
+            message: "What is the Employee's GitHub Username?",
+            name: "username",
+            type: "input",
+        },
+        {
+            message: "Would You Like to Add Another Employee?",
+            name: "nextEmployee",
+            type: "confirm",
+        }
+    ])
+        .then(answers => {
+            let { name, id, email, username } = answers
+            let employee = new Engineer(name, id, email, username)
+            employees.push(employee)
+            if (answers.nextEmployee) {
+                promptUser()
+            }
+            else {
+                writeToFile()
+            }
+        })
+}
+function addManager() {
+    inquirer.prompt([
+        {
+            message: "What is the Employee's Name?",
+            name: "name",
+            type: "input",
+        },
+        {
+            message: "What is the Employee's Email?",
+            name: "email",
+            type: "input",
+        },
+        {
+            message: "What is the Employee's ID Number?",
+            name: "id",
+            type: "input",
+        },
+        {
+            message: "What is the Manager's Office Number",
+            name: "officenumb",
+            type: "input",
+        },
+        {
+            message: "Would You Like to Add Another Employee?",
+            name: "nextEmployee",
+            type: "confirm",
+        }
+    ])
+        .then(answers => {
+            let { name, id, email, officenumb } = answers
+            let employee = new Manager(name, id, email, officenumb)
+            employees.push(employee)
+            if (answers.nextEmployee) {
+                promptUser()
+            }
+            else {
+                writeToFile()
+            }
+        })
+}
+promptUser()
+
+function writeToFile() {
+    fs.writeFile(outputPath, render(employees), function (err) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log("File generated!");
+        }
+    })
+};
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
 // generate and return a block of HTML including templated divs for each employee!
